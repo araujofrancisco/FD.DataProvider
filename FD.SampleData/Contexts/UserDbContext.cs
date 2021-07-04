@@ -13,16 +13,14 @@ namespace FD.SampleData.Contexts
         public DbSet<UserRole> UserRoles { get; set; }
 
 
-        //public UserDbContext()
-        //{
-        //}
-        //public UserDbContext(DbContextOptions<UserDbContext> options) : base(options)
-        //{
-        //}
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    base.OnConfiguring(optionsBuilder);
-        //}
+        public UserDbContext()
+        {
+        }
+
+        public UserDbContext(DbContextOptions<UserDbContext> options) : base(options)
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
