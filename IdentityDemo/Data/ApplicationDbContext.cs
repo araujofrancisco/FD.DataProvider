@@ -124,7 +124,9 @@ namespace IdentityDemo.Data
             var pwd = "123456";
             var rng = new Random();
             for (var index = 1; index < seedSize; index++)
-                await EnsureUser(serviceScope, pwd, UserGenerator.GenerateEmail(rng), UserGenerator.GeneratePhone(rng));
+                await EnsureUser(serviceScope, pwd, 
+                    UserGenerator.GenerateEmail(rng, UserGenerator.GenerateLastName(rng)), 
+                    UserGenerator.GeneratePhone(rng));
         }
 
         /// <summary>
