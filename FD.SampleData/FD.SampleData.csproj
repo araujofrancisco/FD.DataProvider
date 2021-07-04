@@ -10,7 +10,10 @@
     <RepositoryUrl>https://github.com/araujofrancisco/FD.DataProvider</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>sqlite, dbcontextfactory, data-generators</PackageTags>
-    <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
+    <PackageReleaseNotes>- Relocated users and weather models to namespace more specific.
+- Added ReportTypes model to WeatherDbContext.
+- Fixes on Weather model/generation.</PackageReleaseNotes>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
