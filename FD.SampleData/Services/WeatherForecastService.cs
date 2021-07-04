@@ -1,6 +1,6 @@
 using FD.Blazor.Core;
 using FD.SampleData.Contexts;
-using FD.SampleData.Models;
+using FD.SampleData.Models.Weather;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
