@@ -1,5 +1,6 @@
 ﻿using FD.SampleData.Contexts;
 using FD.SampleData.Data;
+using FD.SampleData.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -37,12 +38,18 @@ namespace ConsoleDemo
                     options.EnableSensitiveDataLogging(true);
 #endif
                 });
-                services.AddSingleton<FD.SampleData.Interfaces.IDbContextFactory<UserDbContext>, DbContextFactory<UserDbContext>>();
-                services.AddScoped(p => p.GetRequiredService<FD.SampleData.Interfaces.IDbContextFactory<UserDbContext>>().CreateContext());
+                services
+                    .AddSingleton<IDbContextFactory<UserDbContext>, DbContextFactory<UserDbContext>>()
+                    .AddScoped(p => p.GetRequiredService<IDbContextFactory<UserDbContext>>().CreateContext())
+
+                    .AddSingleton<IDbContextFactory<WeatherForecastDbContext>, DbContextFactory<WeatherForecastDbContext>>()
+                    .AddScoped(p => p.GetRequiredService<IDbContextFactory<WeatherForecastDbContext>>().CreateContext())
+
+                    .AddScoped<IDataService, DataService>();
 
                 // does the work we are hosting, also includes a scope for the dataservice
-                services.AddHostedService<Worker>()
-                    .AddScoped<IDataService, DataService>();
+                services.AddHostedService<Worker>();
+                    
             })
             // setup logging configuration
             .ConfigureLogging((hostingContext, logging) =>
