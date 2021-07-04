@@ -14,10 +14,10 @@ namespace FD.SampleData.Data
         /// </summary>
         /// <param name="random"></param>
         /// <returns></returns>
-        public static string GenerateEmail(Random? random)
+        public static string GenerateEmail(Random? random, string? prefix = "user")
         {
             var rng = random ?? new Random();
-            return $"user{rng.Next(10000, 99999)}@{Generics.EmailProvider[rng.Next(Generics.EmailProvider.Length)]}";
+            return $"{prefix}{rng.Next(10000, 99999)}@{Generics.EmailProvider[rng.Next(Generics.EmailProvider.Length)]}";
         }
 
         /// <summary>
@@ -32,6 +32,28 @@ namespace FD.SampleData.Data
         }
 
         /// <summary>
+        /// Generates a random last name.
+        /// </summary>
+        /// <param name="random"></param>
+        /// <returns></returns>
+        public static string GenerateLastName(Random? random)
+        {
+            var rng = random ?? new Random();
+            return $"{Generics.LastNames[rng.Next(Generics.LastNames.Length)]}";
+        }
+
+        /// <summary>
+        /// Generates a random first name.
+        /// </summary>
+        /// <param name="random"></param>
+        /// <returns></returns>
+        public static string GenerateFirstName(Random? random)
+        {
+            var rng = random ?? new Random();
+            return $"{Generics.FirstNames[rng.Next(Generics.FirstNames.Length)]}";
+        }
+
+        /// <summary>
         /// Generates a random user name.
         /// </summary>
         /// <param name="random"></param>
@@ -39,7 +61,7 @@ namespace FD.SampleData.Data
         public static string GenerateUserName(Random? random)
         {
             var rng = random ?? new Random();
-            return $"{Generics.LastNames[rng.Next(Generics.LastNames.Length)]}.{Generics.FirstNames[rng.Next(Generics.FirstNames.Length)]}";
+            return $"{GenerateLastName(rng)}.{GenerateFirstName(rng)}";
         }
 
         /// <summary>
