@@ -31,9 +31,6 @@ namespace FD.SampleData.Data
         {
             if (_connection == null)
             {
-#if DEBUG
-                Console.WriteLine($"Creating new connection {DateTimeOffset.Now}");
-#endif
                 _connection = new SqliteConnection("DataSource=:memory:");
                 _connection.Open();
 
