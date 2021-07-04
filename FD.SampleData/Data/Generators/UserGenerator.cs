@@ -1,5 +1,5 @@
 ﻿using FD.Blazor.Core;
-using FD.SampleData.Models;
+using FD.SampleData.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
