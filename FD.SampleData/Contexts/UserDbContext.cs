@@ -1,11 +1,7 @@
 ﻿using FD.SampleData.Data;
 using FD.SampleData.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Collections.Generic;
-//using Microsoft.Extensions.Logging;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace FD.SampleData.Contexts
@@ -17,28 +13,16 @@ namespace FD.SampleData.Contexts
         public DbSet<UserRole> UserRoles { get; set; }
 
 
-        //public readonly ILoggerFactory MyLoggerFactory;
-
-        public UserDbContext()
-        {
-
-        }
-
-        public UserDbContext(DbContextOptions<UserDbContext> options) : base(options)
-        {
-#if DEBUG
-            Debug.WriteLine($"{ContextId} context created.");
-            // we can enable factory logger if is required to check the sql statements
-            //MyLoggerFactory = LoggerFactory.Create(builder => { builder.AddConsole(); });
-#endif
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
-            //optionsBuilder.UseLoggerFactory(MyLoggerFactory);
-        }
-
+        //public UserDbContext()
+        //{
+        //}
+        //public UserDbContext(DbContextOptions<UserDbContext> options) : base(options)
+        //{
+        //}
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    base.OnConfiguring(optionsBuilder);
+        //}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -62,14 +46,19 @@ namespace FD.SampleData.Contexts
                     });
         }
 
-        public override async Task Seed(int? SeedSize)
+        /// <summary>
+        /// Seed roles and users using UserGenerator.
+        /// </summary>
+        /// <param name="seedSize"></param>
+        /// <returns></returns>
+        public override async Task Seed(int? seedSize)
         {
             // generates roles and save then to get the database generate ids
             List<Role> roles = await UserGenerator.GenerateRoles();
             await AddRangeAsync(roles);
             await SaveChangesAsync();
 
-            List<User> users = await UserGenerator.GenerateUsers(roles, SeedSize);
+            List<User> users = await UserGenerator.GenerateUsers(roles, seedSize);
             await AddRangeAsync(users);
             await SaveChangesAsync();
         }
