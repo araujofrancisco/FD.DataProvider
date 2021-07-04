@@ -1,8 +1,8 @@
-﻿using FD.SampleData.Models;
+﻿using FD.SampleData.Data;
+using FD.SampleData.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
-//using Microsoft.Extensions.Logging;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FD.SampleData.Contexts
@@ -13,29 +13,23 @@ namespace FD.SampleData.Contexts
 
         public WeatherForecastDbContext()
         {
-
         }
 
         public WeatherForecastDbContext(DbContextOptions<WeatherForecastDbContext> options) : base(options)
         {
-#if DEBUG
-            Debug.WriteLine($"{ContextId} context created.");
-            // we can enable factory logger if is required to check the sql statements
-            //MyLoggerFactory = LoggerFactory.Create(builder => { builder.AddConsole(); });
-#endif
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        /// <summary>
+        /// Seed roles and users using UserGenerator.
+        /// </summary>
+        /// <param name="seedSize"></param>
+        /// <returns></returns>
+        public override async Task Seed(int? seedSize)
         {
-            base.OnConfiguring(optionsBuilder);
-            //optionsBuilder.UseLoggerFactory(MyLoggerFactory);
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            // set model relations
-
-            base.OnModelCreating(modelBuilder);
+            // generates weather forecasts 
+            List<WeatherForecast> forecasts = await WeatherForecastGenerator.GenerateForecast(DateTime.Today, seedSize);
+            await AddRangeAsync(forecasts);
+            await SaveChangesAsync();
         }
     }
 }
