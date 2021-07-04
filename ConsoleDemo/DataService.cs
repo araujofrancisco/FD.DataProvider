@@ -1,11 +1,11 @@
 ﻿using FD.Blazor.Core;
 using FD.SampleData.Contexts;
-using FD.SampleData.Models;
 using FD.SampleData.Data;
 using FD.SampleData.Services;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using FD.SampleData.Models.Users;
 
 namespace ConsoleDemo
 {
