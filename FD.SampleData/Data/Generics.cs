@@ -29,5 +29,9 @@
             "Cloudy", "Rainy"
         };
 
+        public static readonly string[] ReportTypes = new[]
+        {
+            "Express", "Daily", "Weekly", "None"
+        };
     }
 }
