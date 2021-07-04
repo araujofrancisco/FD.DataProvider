@@ -21,7 +21,7 @@ namespace FD.SampleData.Contexts
         }
 
         /// <summary>
-        /// Seed roles and users using UserGenerator.
+        /// Seed forecasts and report types.
         /// </summary>
         /// <param name="seedSize"></param>
         /// <returns></returns>
