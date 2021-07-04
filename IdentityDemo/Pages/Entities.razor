@@ -1,9 +1,6 @@
 ﻿@page "/Entities"
 @attribute [Authorize]
 
-@using System.Reflection
-@using IdentityDemo.Data
-
 @inject IDataService DataService
 
 <h3>Entities</h3>
@@ -12,7 +9,7 @@
 {
     <div class="grid" style="display: grid;width: 83vw;">
         <ul class="ul-entity">
-            @foreach (var entity in entities)
+            @foreach (var entity in entities)       // creates a list to show all entities found
             {
                 <li class="li-entity" @onclick="(args) => OnEntityClick(args, entity)">
                     <div class="li-row">
@@ -26,122 +23,67 @@
 
     <hr style="height: 2px;padding: 8px;" />
 
-    @if (curEntity != null)
+    @if (curEntity != null)     // if an entity was selected and it have rows generates a table showing the records
     {
-<div>
-    <h4>@curEntity.Name</h4>
+        <div>
+            <h4>@curEntity.Name</h4>
 
-    @if (curRows.Any())
-    {
-        @*int index = 0;
-            <DataTable @ref="_table" TModel="Row" Items="LoadItems">
-                @foreach (var row in curEntity.Columns())
-                {
-                    <DataTableColumn TModel="Row" Property="(e) => e.Columns[index].Value" CustomTitle=@($"{row.Name}") />
-                    index++;
-                }
-            </DataTable>
-            <hr style="padding: 15px;" />
-
-            style="height: 80vh;overflow: auto;">
-        *@
-        <div class="table-responsive-sm">
-            <table class="table table-stripped table-hover table-dark">
-                <thead>
-                    <tr>
-                        @foreach (Column column in curEntity.Columns())
-                        {
-                            <td>@column.Name (@column.DataType.ToString())</td>
-                        }
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (Row row in curEntity.Rows())
-                    {
-                        <tr>
-                            @foreach (Column column in row.Columns)
+            @if (curRows.Any())
+            {
+                <div class="table-responsive-sm">
+                    <table class="table table-stripped table-hover table-dark">
+                        <thead>
+                            <tr>
+                                @foreach (Column column in curEntity.Columns())
+                                {
+                                    <td>@column.Name (@column.DataType.ToString())</td>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (Row row in curEntity.Rows())
                             {
-                                <td>@column.Value</td>
+                                <tr>
+                                    @foreach (Column column in row.Columns)
+                                    {
+                                        <td>@column.Value</td>
+                                    }
+                                </tr>
                             }
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div>
+                    There are no records for this entity, we cannot infer the columns without records.
+                </div>
+            }
         </div>
-    }
-</div>
     }
 }
 
 @code
 {
-    //private DataTable<Row> _table;
     private IEnumerable<DbContextEntity> entities { get; set; }
     private DbContextEntity curEntity { get; set; } = null;
     private IEnumerable<Row> curRows { get; set; } = null;
 
     protected override async Task OnInitializedAsync()
     {
+        // get all the entities in current dbcontext
+        // this allow to change dbcontext and still showing all entities and data in it
         entities = await DataService.GetAllQueries();
     }
 
-    private Task OnEntityClick(MouseEventArgs args, DbContextEntity e)
+    private Task OnEntityClick(MouseEventArgs args, DbContextEntity entity)
     {
-        curEntity = e;
+        // new entity has been selected, we update current selection and get the rows to
+        // create the table with content
+        curEntity = entity;
         curRows = curEntity.Rows();
-
-        //dynamic obj = new Row();
-        //Func<int, int> func = x => x * 2;
-        //obj.Foo = func;
-        //var i = obj.Foo(123);
 
         return Task.CompletedTask;
     }
-
-    @*public RenderFragment<object> GetColumnTemplate(string propName)
-    {
-        // Define the RenderFragment in your code
-        // Its type matches the type of the Grid context - an object
-        // The same as if you were defining it in the markup
-
-        // The syntax for writing a RenderFragment is rather specific, note the lambda expressions
-
-        RenderFragment<object> ColumnTemplate = context => __builder =>
-        {
-        // in this example we pass the property name from the grid declaration
-        // and we use reflection to extract the needed data. You don't have to
-        // If you know the field or the type, you can cast and simplify this code as needed
-
-        PropertyInfo propertyInfo = context.GetType().GetProperty(propName);
-
-            var propType = propertyInfo.PropertyType;
-
-            var propValue = propertyInfo.GetValue(context);
-
-            if (propType == typeof(int))
-            {
-            <div style="text-align: right;">
-                @propValue
-            </div>
-            }
-            else
-            {
-            @propValue
-            }
-        };
-
-        return ColumnTemplate;
-    }*@
-
-    ///// <summary>
-    ///// ItemProvider for Virtualize component, this will retrieve the data from our service and manage records that will be shown.
-    ///// </summary>
-    ///// <param name="request"></param>
-    ///// <returns></returns>
-    //protected async ValueTask<ItemsProviderResult<Row>> LoadItems(ItemsProviderRequest request)
-    //{
-    //    var fc = curEntity.Rows().ToList();
-    //    //if (SortColumn != null) fc = (SortDirection == SortDirection.Ascending) ? fc.OrderBy(SortColumn).ToArray() : fc.OrderByDescending(SortColumn).ToArray();
-    //    return new ItemsProviderResult<Row>(fc, fc.Count());    //(fc.Skip(request.StartIndex).Take(request.Count), fc.Count());
-    //}
 }
