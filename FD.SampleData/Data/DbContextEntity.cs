@@ -5,14 +5,17 @@ using System;
 
 namespace FD.SampleData.Data
 {
+    /// <summary>
+    /// Generic row class for usign with DbContextEntity.
+    /// </summary>
     public class Row
     {
-        public List<Column> Columns { get; set; } = new List<Column>();
-
-        public void Add(Column column) =>
-            Columns.Add(column);
+        public List<Column> Columns { get; set; } = new List<Column>();       
     }
 
+    /// <summary>
+    /// Generic column class for usign with DbContextEntity.
+    /// </summary>
     public class Column
     {
         public string Name { get; set; }
@@ -20,6 +23,9 @@ namespace FD.SampleData.Data
         public object? Value { get; set; }
     }
 
+    /// <summary>
+    /// Generic context entity information. Includes entity name, rows and columns.
+    /// </summary>
     public class DbContextEntity
     {
         public string Name { get; set; }
@@ -31,22 +37,10 @@ namespace FD.SampleData.Data
             Entity = entity;
         }
 
-        //public Type? GetEntityType()
-        //{
-        //    //MethodInfo method = typeof(DbContext).GetMethods().Where(m => m.Name == nameof(DbContext.Set)).First();
-        //    //MethodInfo genericMethod = method.MakeGenericMethod(entityType);
-
-        //    //var dbSet = genericMethod.Invoke(context, null);
-        //    //var entity = (IQueryable<object>)dbSet;
-        //    //string modelName = entity.GetType().GetProperties()
-        //    //    .Where(p => p.Name == "EntityType")?
-        //    //    .First()?.ReflectedType?.GenericTypeArguments[0]?.Name;
-
-        //    //return new DbContextEntity(modelName, entity);
-        //    return Entity.GetType().GetProperties().Where(p => p.Name == "EntityType")?.First()?.ReflectedType;
-
-        //}
-
+        /// <summary>
+        /// Returns an enumeration of row for this entity object.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<Row> Rows()
         {
             foreach(var item in Entity.ToList())
@@ -55,18 +49,17 @@ namespace FD.SampleData.Data
                 // item properties are the columns for the row
                 foreach(PropertyInfo prop in item.GetType().GetProperties())
                 {
-                    row.Add(
+                    row.Columns.Add(
                         new()
                         {
-                            Name = prop.Name, //prop.GetType()?.GetProperties(BindingFlags.Public | BindingFlags.Instance).First().Name,
+                            Name = prop.Name, 
                             DataType = prop.PropertyType,
-                            Value = prop.GetValue(item) //prop.GetType()?.GetProperties(BindingFlags.Public | BindingFlags.Instance).First().GetValue(prop)
+                            Value = prop.GetValue(item)
                         });
                 }
                 yield return row;
             }
         }
-
 
         /// <summary>
         /// Returns an enumaration for the columns names and types, value property will be null.
@@ -75,7 +68,7 @@ namespace FD.SampleData.Data
         public IEnumerable<Column> Columns()
         {
             var row = Entity?.FirstOrDefault();
-            //return row?.GetType()?.GetProperties(BindingFlags.Public | BindingFlags.Instance)?.ToList();
+
             return row?.GetType()?.GetProperties(BindingFlags.Public | BindingFlags.Instance)?
                 .ToList()?
                 .Select(c => new Column { Name = c?.Name, DataType = c?.PropertyType, Value = null })?
