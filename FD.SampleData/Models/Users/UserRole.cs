@@ -1,4 +1,4 @@
-﻿namespace FD.SampleData.Models
+﻿namespace FD.SampleData.Models.Users
 {
     public class UserRole
     {

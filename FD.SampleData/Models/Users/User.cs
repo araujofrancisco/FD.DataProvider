@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace FD.SampleData.Models
+namespace FD.SampleData.Models.Users
 {
     [Index("UserName", IsUnique = true)]
     public class User

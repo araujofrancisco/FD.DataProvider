@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace FD.SampleData.Models
+namespace FD.SampleData.Models.Users
 {
     [Index("Name", IsUnique = true)]
     public class Role
