@@ -25,6 +25,76 @@ namespace FD.SampleData.Services
             _context = context;
         }
 
+        /// <summary>
+        /// Returns report types that match filters and sorted by column and direction indicated. This method is compatible with virtualize component
+        /// so allows to fetch only a portion of total records.
+        /// </summary>
+        /// <param name="filters"></param>
+        /// <param name="sortColumn"></param>
+        /// <param name="sortDirection"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="numberOfRecords"></param>
+        /// <returns></returns>
+        public async Task<List<ReportType>> GetReportTypes(Expression<Func<ReportType, bool>>? filters,
+            string sortColumn, SortDirection sortDirection, int startIndex, int numberOfRecords)
+        {
+            return await _context.ReportTypes
+                .AsNoTracking()
+                .IfThenElse(
+                    () => (filters == null),
+                    e => e,
+                    e => e.Where(filters)
+                )
+                .IfThenElse(
+                    () => (sortDirection == SortDirection.Ascending),
+                    e => (sortColumn == null) ? e : e.OrderBy(sortColumn),
+                    e => (sortColumn == null) ? e : e.OrderByDescending(sortColumn)
+                )
+                .Skip(startIndex)
+                .Take(numberOfRecords)
+                .ToListAsync();
+        }
+
+        /// <summary>
+        /// Returns forecast count for records that match filters. This method can be used to determine the total number
+        /// of forecasts for virtualize.
+        /// </summary>
+        /// <param name="filters"></param>
+        /// <returns></returns>
+        public async Task<int> GetForecastCountAsync(Expression<Func<WeatherForecast, bool>>? filters)
+        {
+            int retVal;
+
+            await semForecast.WaitAsync();
+            try
+            {
+                retVal = await _context.WeatherForecasts
+                    .AsNoTracking()
+                    .Include(r => r.ReportTypes)
+                    .IfThenElse(
+                        () => (filters == null),
+                        e => e,
+                        e => e.Where(filters)
+                    )
+                    .CountAsync();
+            }
+            finally
+            {
+                semForecast.Release();
+            }
+
+            return retVal;
+        }
+
+        /// <summary>
+        /// Returns user count for users that match filters. This method can be used to determine the total number
+        /// </summary>
+        /// <param name="filters"></param>
+        /// <param name="sortColumn"></param>
+        /// <param name="sortDirection"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="numberOfRecords"></param>
+        /// <returns></returns>
         public async Task<List<WeatherForecast>> GetForecastAsync(Expression<Func<WeatherForecast, bool>>? filters,
             string sortColumn, SortDirection sortDirection, int startIndex, int numberOfRecords)
         {
@@ -38,6 +108,7 @@ namespace FD.SampleData.Services
                 // does the join with tables referrenced and apply filters
                 weatherForecasts = await _context.WeatherForecasts
                 .AsNoTracking()
+                .Include(r => r.ReportTypes)
                 .IfThenElse(
                     () => (filters == null),
                     e => e,
