@@ -1,5 +1,5 @@
 ﻿using FD.SampleData.Data.Generators;
-using FD.SampleData.Models;
+using FD.SampleData.Models.Users;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
