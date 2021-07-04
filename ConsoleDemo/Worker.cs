@@ -17,12 +17,18 @@ namespace ConsoleDemo
         private static bool _execute = true;
 
         private readonly EasyConsole.Menu menu = new();
-        private UserDbContext _context;
+        private UserDbContext _contextUser;
+        private WeatherForecastDbContext _contextForecast;
 
-        public Worker(ILogger<Worker> logger, UserDbContext context, IDataService dataService, IHostApplicationLifetime applicationLifetime)
+        public Worker(ILogger<Worker> logger, 
+            UserDbContext contextUser, WeatherForecastDbContext contextForecast,
+            IDataService dataService, IHostApplicationLifetime applicationLifetime)
         {
             _logger = logger;
-            _context = context;
+
+            _contextUser = contextUser;
+            _contextForecast = contextForecast;
+
             _dataService = dataService;
             _applicationLifetime = applicationLifetime;
 
@@ -48,10 +54,12 @@ namespace ConsoleDemo
 
         private void Initialize()
         {
-            var entities = Task.Run(async () => await _dataService.GetAllQueries()).Result;
+            var _superset = Task.Run(async () => await _dataService.GetAllQueries()).Result;
 
-            foreach (var item in entities)
-                menu.Add(item.Name, () => { item.Entity.ToList().PrintTable(item.Name); _execute = true; });
+            // list while add a menu item for each model in every dbcontext we got in registers and setup in dataservice
+            foreach (var _set in _superset)
+                foreach (var _item in _set.Entities)
+                    menu.Add(_item.Name, () => { _item.Entity.ToList().PrintTable(_item.Name); _execute = true; });
             menu.Add("Exit", () => _applicationLifetime.StopApplication());
         }
     }

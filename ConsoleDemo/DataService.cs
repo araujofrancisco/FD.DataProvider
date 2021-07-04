@@ -11,36 +11,50 @@ namespace ConsoleDemo
 {
     public interface IDataService
     {
-        Task<IEnumerable<DbContextEntity>> GetAllQueries();
+        Task<IEnumerable<MultiContext>> GetAllQueries();
         Task<List<User>> GetUsersAsync();
         Task<List<Role>> GetRolesAsync();
+    }
+
+    public class MultiContext
+    {
+        public BaseDbContext Context { get; set; }
+        public IEnumerable<DbContextEntity> Entities { get; set; }
     }
 
     public class DataService : IDataService
     {
         private readonly ILogger<DataService> _logger;
-        private readonly UserDbContext _context;
+        private readonly UserDbContext _contextUser;
+        private readonly WeatherForecastDbContext _contextForecast;
         private const int seedSize = 1000;
 
-        public DataService(ILogger<DataService> logger, UserDbContext context)
+        public DataService(ILogger<DataService> logger, UserDbContext contextUser, WeatherForecastDbContext contextForecast)
         {
             _logger = logger;
-            _context = context;
+            _contextUser = contextUser;
+            _contextForecast = contextForecast;
 
-            DbInitializer<UserDbContext>.Initialize(context, seedSize);
+            DbInitializer<UserDbContext>.Initialize(contextUser, seedSize);
+            DbInitializer<WeatherForecastDbContext>.Initialize(contextForecast, seedSize);
         }
 
         public async Task<List<User>> GetUsersAsync()
         {
-            return await new UserService(_context).GetUsersAsync(null, "UserName", SortDirection.Ascending, 0, 100);
+            return await new UserService(_contextUser).GetUsersAsync(null, "UserName", SortDirection.Ascending, 0, 100);
         }
 
         public async Task<List<Role>> GetRolesAsync()
         {
-            return await new UserService(_context).GetRolesAsync(null, "Name", SortDirection.Ascending, 0, 10);
+            return await new UserService(_contextUser).GetRolesAsync(null, "Name", SortDirection.Ascending, 0, 10);
         }
 
-        public Task<IEnumerable<DbContextEntity>> GetAllQueries() =>
-            Task.FromResult(_context.GetAllEntityQueries());
+        public async Task<IEnumerable<MultiContext>> GetAllQueries() =>
+            await Task.Run(() => new List<MultiContext>()
+            {
+                new MultiContext { Context = _contextUser, Entities = _contextUser.GetAllEntityQueries() },
+                new MultiContext { Context = _contextForecast, Entities = _contextForecast.GetAllEntityQueries() }
+            });
+
     }
 }
