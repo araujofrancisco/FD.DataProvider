@@ -10,8 +10,10 @@
     <RepositoryUrl>https://github.com/araujofrancisco/FD.DataProvider</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>sqlite, dbcontextfactory, data-generators</PackageTags>
-    <PackageReleaseNotes>- Added Id property to WeatherForecast model.</PackageReleaseNotes>
-    <Version>1.0.2</Version>
+    <PackageReleaseNotes>- Added methods to count forecasts and retrieve report types.
+- Added model relation between forecast and report types.
+- Fixed bug with report types data seeding.</PackageReleaseNotes>
+    <Version>1.0.3</Version>
   </PropertyGroup>
 
   <ItemGroup>
