@@ -20,12 +20,13 @@ namespace IdentityDemo
         }
 
         public IConfiguration Configuration { get; }
-        private const int seedSize = 1000;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            // set dbcontext factory options and register it as singleton to allow using memory database
+            // until the service gets shutdown
             services.AddDbContextFactory<ApplicationDbContext>(options =>
             {
 #if DEBUG
@@ -35,8 +36,10 @@ namespace IdentityDemo
             });
             services
                 .AddSingleton<FD.SampleData.Interfaces.IDbContextFactory<ApplicationDbContext>, DbContextFactory<ApplicationDbContext>>()
+                // register the method to obtain a new context and creates the database if there is no a previous connection
                 .AddScoped(p => p.GetRequiredService<FD.SampleData.Interfaces.IDbContextFactory<ApplicationDbContext>>().CreateContext())
-                .AddScoped<IDataService, DataService>();
+                // custom data access service
+                .AddScoped<IDataService, DataService>();        
 
             services.AddDefaultIdentity<IdentityUser>(options =>
             {
@@ -83,9 +86,17 @@ namespace IdentityDemo
                 endpoints.MapFallbackToPage("/_Host");
             });
 
+            // custom seeder
             SeedDb(app.ApplicationServices);
         }
 
+        // on generated data seed size will indicate how many records we want to create
+        private const int seedSize = 1000;
+
+        /// <summary>
+        /// Executes database seeder just after all application services has started.
+        /// </summary>
+        /// <param name="serviceProvider"></param>
         public void SeedDb(IServiceProvider serviceProvider)
         {
             using var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
