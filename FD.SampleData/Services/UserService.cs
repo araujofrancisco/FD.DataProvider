@@ -23,6 +23,16 @@ namespace FD.SampleData.Services
             _context = context;
         }
 
+        /// <summary>
+        /// Returns roles that match filters and sorted by column and direction indicated. This method is compatible with virtualize component
+        /// so allows to fetch only a portion of total records.
+        /// </summary>
+        /// <param name="filters"></param>
+        /// <param name="sortColumn"></param>
+        /// <param name="sortDirection"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="numberOfRecords"></param>
+        /// <returns></returns>
         public async Task<List<Role>> GetRolesAsync(Expression<Func<Role, bool>>? filters,
             string sortColumn, SortDirection sortDirection, int startIndex, int numberOfRecords)
         {
@@ -45,6 +55,12 @@ namespace FD.SampleData.Services
                 .ToListAsync();
         }
 
+        /// <summary>
+        /// Returns user count for users that match filters. This method can be used to determine the total number
+        /// of users for virtualize.
+        /// </summary>
+        /// <param name="filters"></param>
+        /// <returns></returns>
         public async Task<int> GetUsersCountAsync(Expression<Func<User, bool>>? filters)
         {
             int retVal;
@@ -71,6 +87,16 @@ namespace FD.SampleData.Services
             return retVal;
         }
 
+        /// <summary>
+        /// Returns users that match filters and sorted by column and direction indicated. This method is compatible with virtualize component
+        /// so allows to fetch only a portion of total records.
+        /// </summary>
+        /// <param name="filters"></param>
+        /// <param name="sortColumn"></param>
+        /// <param name="sortDirection"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="numberOfRecords"></param>
+        /// <returns></returns>
         public async Task<List<User>> GetUsersAsync(Expression<Func<User, bool>>? filters,
             string sortColumn, SortDirection sortDirection, int startIndex, int numberOfRecords)
         {
@@ -126,9 +152,10 @@ namespace FD.SampleData.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task SetNewPassword(User user)
+        public async Task SetNewPassword(User user, string password)
         {
-            //TODO: we probably need the new password
+            //TODO: implement password hashing
+            user.PasswordHash = password;
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
