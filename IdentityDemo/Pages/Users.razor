@@ -1,0 +1,44 @@
+﻿@page "/users"
+@attribute [Authorize]
+
+@*@using Microsoft.AspNetCore.Authorization;*@
+@using Microsoft.AspNetCore.Identity;
+
+@inject UserManager<IdentityUser> _UserManager
+@*@inject RoleManager<IdentityRole> _RoleManager*@
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<DataTable @ref="_table" TModel="IdentityUser" Items="LoadUsers"
+           SortChanged="(c, d) => { this.SortColumn = c; this.SortDirection = d; }"
+           ContainerCssClass="d-flex justify-center align-center mud-height-full"
+           ContainerAttributes=@(new Dictionary<string, object>() { { "style", "width: 100%;" } })
+           Styles=@(FD.Blazor.Core.TableStyle.Striped | FD.Blazor.Core.TableStyle.Hover)
+           TableAttributes=@(new Dictionary<string, object>() { { "style", "width: 100%;" } })
+           AllowRowSelection="true"
+           HideVirtualizePlaceholder="true" VirtualizePlaceholder=@((e) => e.AddMarkupContent(1,"<p><em>Loading...</em></p>"))>
+
+    <DataTableColumn TModel="IdentityUser" IsSortable="true" Property="(e) => e.UserName"
+                     IsDefaultSortColumn="true" DefaultSortDirection="FD.Blazor.Core.SortDirection.Ascending" />
+    <DataTableColumn TModel="IdentityUser" IsSortable="true" Property="(e) => e.Email" />
+    <DataTableColumn TModel="IdentityUser" IsSortable="true" Property="(e) => e.PhoneNumber" />
+    <DataTableColumn TModel="IdentityUser" IsSortable="true" Property="(e) => e.LockoutEnabled" />
+</DataTable>
+
+@code
+{
+    [CascadingParameter] private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    private List<IdentityUser> users = new();
+
+    private string SortColumn { get; set; }
+    private FD.Blazor.Core.SortDirection SortDirection { get; set; }
+
+    private DataTable<IdentityUser> _table;
+
+    protected async ValueTask<ItemsProviderResult<IdentityUser>> LoadUsers(ItemsProviderRequest request)
+    {
+        var fc = _UserManager.Users.ToList();
+        if (SortColumn != null) fc = (SortDirection == FD.Blazor.Core.SortDirection.Ascending) ? fc.OrderBy(SortColumn).ToList() : fc.OrderByDescending(SortColumn).ToList();
+        return new ItemsProviderResult<IdentityUser>(fc.Skip(request.StartIndex).Take(request.Count), fc.Count());
+    }
+}

@@ -1,0 +1,18 @@
+﻿.ul-entity {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.li-entity:hover {
+    cursor: pointer;
+    color: whitesmoke;
+    background-color: blueviolet;
+    display: grid;
+    font-weight: 600;
+}
+
+.li-row {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: 30% 30%;
+}
