@@ -1,4 +1,5 @@
 ﻿using FD.SampleData.Data;
+using FD.SampleData.Data.Generators;
 using FD.SampleData.Extensions;
 using FD.SampleData.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -125,8 +126,8 @@ namespace IdentityDemo.Data
             var rng = new Random();
             for (var index = 1; index < seedSize; index++)
                 await EnsureUser(serviceScope, pwd, 
-                    UserGenerator.GenerateEmail(rng, UserGenerator.GenerateLastName(rng)), 
-                    UserGenerator.GeneratePhone(rng));
+                    DataGenerator.GenerateEmail(rng, DataGenerator.GenerateLastName(rng)), 
+                    DataGenerator.GeneratePhone(rng));
         }
 
         /// <summary>
