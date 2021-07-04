@@ -1,4 +1,4 @@
-﻿using FD.SampleData.Data;
+﻿using FD.SampleData.Data.Generators;
 using FD.SampleData.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
