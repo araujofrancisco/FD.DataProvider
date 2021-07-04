@@ -56,7 +56,7 @@ namespace FD.SampleData.Services
         }
 
         /// <summary>
-        /// Returns user count for users that match filters. This method can be used to determine the total number
+        /// Returns user count for records that match filters. This method can be used to determine the total number
         /// of users for virtualize.
         /// </summary>
         /// <param name="filters"></param>
