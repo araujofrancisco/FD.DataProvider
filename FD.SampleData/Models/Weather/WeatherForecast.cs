@@ -1,16 +1,8 @@
 using System;
 using System.Collections.Generic;
 
-namespace FD.SampleData.Models
+namespace FD.SampleData.Models.Weather
 {
-    public enum ReportType
-    {
-        Express,
-        Daily,
-        Weekly,
-        None
-    }
-
     public class WeatherForecast
     {
         public DateTime Date { get; set; }
@@ -21,6 +13,6 @@ namespace FD.SampleData.Models
         public int DaylightTime { get; set; }
         public string Phone { get; set; }
         public DateTime? WhenUpdated { get; set; }
-        public IEnumerable<ReportType> ReportTypes { get; set; }
+        public List<ReportType> ReportTypes { get; set; }
     }
 }
