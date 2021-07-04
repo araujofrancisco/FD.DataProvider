@@ -1,32 +1,65 @@
+using FD.Blazor.Core;
+using FD.SampleData.Contexts;
 using FD.SampleData.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FD.SampleData.Services
 {
     public class WeatherForecastService
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
 
-        public Task<WeatherForecast[]> GetForecastAsync(DateTime startDate)
+        private WeatherForecastDbContext _context;
+
+        // Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time
+        private static SemaphoreSlim semForecast = new(1, 1);
+
+        public WeatherForecastService(WeatherForecastDbContext context)
         {
-            var rng = new Random();
-            return Task.FromResult(Enumerable.Range(1, 1000).Select(index => new WeatherForecast
+            _context = context;
+        }
+
+        public async Task<List<WeatherForecast>> GetForecastAsync(Expression<Func<WeatherForecast, bool>>? filters,
+            string sortColumn, SortDirection sortDirection, int startIndex, int numberOfRecords)
+        {
+            List<WeatherForecast> weatherForecasts = null;
+
+            // Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed,
+            // otherwise this thread waits here until the semaphore is released
+            await semForecast.WaitAsync();
+            try
             {
-                Date = startDate.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)],
-                DaylightTime = rng.Next(6, 14 * 60 * 60),
-                Phone = $"+{rng.Next(1, 9)}{rng.Next(100, 999)}{rng.Next(100, 999)}{rng.Next(1000, 9999)}",
-                WhenUpdated = rng.Next(0, 100) < 30 ? null : DateTime.Now,
-                ReportTypes = new List<ReportType>() { (ReportType)rng.Next(0, 3) }
-            }).ToArray());
+                // does the join with tables referrenced and apply filters
+                weatherForecasts = await _context.WeatherForecasts
+                .AsNoTracking()
+                .IfThenElse(
+                    () => (filters == null),
+                    e => e,
+                    e => e.Where(filters)
+                )
+                .IfThenElse(
+                    () => (sortDirection == SortDirection.Ascending),
+                    e => (sortColumn == null) ? e : e.OrderBy(sortColumn),
+                    e => (sortColumn == null) ? e : e.OrderByDescending(sortColumn)
+                )
+                .Skip(startIndex)
+                .Take(numberOfRecords)
+                .ToListAsync();
+            }
+            finally
+            {
+                // When the task is ready, release the semaphore.It is vital to ALWAYS release the semaphore when we are ready, or else we will end up
+                // with a Semaphore that is forever locked. This is why it is important to do the Release within a try...finally clause; program execution
+                // may crash or take a different path, this way you are guaranteed execution   
+                semForecast.Release();
+            }
+            return weatherForecasts;
         }
     }
 }
