@@ -7,5 +7,6 @@
 
         public int ReportTypeId { get; set; }
         public ReportType ReportType { get; set; }
+
     }
 }

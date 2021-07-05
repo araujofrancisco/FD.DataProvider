@@ -12,7 +12,9 @@
     <PackageTags>sqlite, dbcontextfactory, data-generators</PackageTags>
     <PackageReleaseNotes>- Fixed GetReportType method including ForecastReportTypes in the query.
 </PackageReleaseNotes>
-    <Version>1.0.5</Version>
+    <Version>1.0.5.3</Version>
+    <AssemblyVersion>1.0.5.3</AssemblyVersion>
+    <FileVersion>1.0.5.3</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

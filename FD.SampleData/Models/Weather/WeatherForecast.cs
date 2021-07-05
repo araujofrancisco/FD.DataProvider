@@ -14,6 +14,7 @@ namespace FD.SampleData.Models.Weather
         public int DaylightTime { get; set; }
         public string Phone { get; set; }
         public DateTime? WhenUpdated { get; set; }
-        public virtual ICollection<ForecastReportType> ForecastReportTypes { get; set; }
+        public virtual ICollection<ReportType> ReportTypes { get; set; }
+        public virtual List<ForecastReportType> ForecastReportTypes { get; set; }
     }
 }

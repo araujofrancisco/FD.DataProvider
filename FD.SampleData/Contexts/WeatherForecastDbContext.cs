@@ -1,4 +1,5 @@
 ﻿using FD.SampleData.Data.Generators;
+using FD.SampleData.Models.Users;
 using FD.SampleData.Models.Weather;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -26,18 +27,23 @@ namespace FD.SampleData.Contexts
             base.OnModelCreating(modelBuilder);
 
             // set model relations
-            modelBuilder.Entity<ForecastReportType>()
-                .HasKey(wr => new { wr.WeatherForecastId, wr.ReportTypeId });
+            modelBuilder.Entity<WeatherForecast>()
+                .HasMany(u => u.ReportTypes)
+                .WithMany(r => r.WeatherForecasts)
+                .UsingEntity<ForecastReportType>(
+                    j => j
+                        .HasOne(ur => ur.ReportType)
+                        .WithMany(t => t.ForecastReportTypes)
+                        .HasForeignKey(ur => ur.ReportTypeId),
+                    j => j
+                        .HasOne(ur => ur.WeatherForecast)
+                        .WithMany(t => t.ForecastReportTypes)
+                        .HasForeignKey(ur => ur.WeatherForecastId),
+                    j =>
+                    {
+                        j.HasKey(t => new { t.WeatherForecastId, t.ReportTypeId });
+                    });
 
-            modelBuilder.Entity<ForecastReportType>()
-               .HasOne(wr => wr.WeatherForecast)
-               .WithMany(w => w.ForecastReportTypes)
-               .HasForeignKey(wr => wr.WeatherForecastId);
-
-            modelBuilder.Entity<ForecastReportType>()
-                .HasOne(wr => wr.ReportType)
-                .WithMany(r => r.ForecastReportTypes)
-                .HasForeignKey(wr => wr.ReportTypeId);
         }
 
         /// <summary>
@@ -52,12 +58,8 @@ namespace FD.SampleData.Contexts
             await SaveChangesAsync();
 
             // generates weather forecasts 
-            List<WeatherForecast> forecasts = await WeatherForecastGenerator.GenerateForecasts(DateTime.Today, seedSize);
+            List<WeatherForecast> forecasts = await WeatherForecastGenerator.GenerateForecasts(DateTime.Today, reportTypes, seedSize);
             await AddRangeAsync(forecasts);
-            await SaveChangesAsync();
-
-            List<ForecastReportType> forecastReportTypes = await WeatherForecastGenerator.GenerateForecastReportTypes(forecasts, reportTypes);
-            await AddRangeAsync(forecastReportTypes);
             await SaveChangesAsync();
         }
     }
