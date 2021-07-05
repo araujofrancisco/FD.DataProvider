@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /identitydemo.tar
 /push_nuget.bat
+/push_nuget_local.bat
