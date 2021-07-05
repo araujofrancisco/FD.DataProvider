@@ -1,5 +1,4 @@
 ﻿using FD.SampleData.Data.Generators;
-using FD.SampleData.Models.Users;
 using FD.SampleData.Models.Weather;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,6 +11,7 @@ namespace FD.SampleData.Contexts
     {
         public DbSet<ReportType> ReportTypes { get; set; }
         public DbSet<WeatherForecast> WeatherForecasts { get; set; }
+        public DbSet<ForecastReportType> ForecastReportTypes { get; set; }
 
         public WeatherForecastDbContext()
         {
@@ -26,8 +26,18 @@ namespace FD.SampleData.Contexts
             base.OnModelCreating(modelBuilder);
 
             // set model relations
-            modelBuilder.Entity<WeatherForecast>()
-                .HasMany(r => r.ReportTypes);
+            modelBuilder.Entity<ForecastReportType>()
+                .HasKey(wr => new { wr.WeatherForecastId, wr.ReportTypeId });
+
+            modelBuilder.Entity<ForecastReportType>()
+               .HasOne(wr => wr.WeatherForecast)
+               .WithMany(w => w.ForecastReportTypes)
+               .HasForeignKey(wr => wr.WeatherForecastId);
+
+            modelBuilder.Entity<ForecastReportType>()
+                .HasOne(wr => wr.ReportType)
+                .WithMany(r => r.ForecastReportTypes)
+                .HasForeignKey(wr => wr.ReportTypeId);
         }
 
         /// <summary>
@@ -42,8 +52,12 @@ namespace FD.SampleData.Contexts
             await SaveChangesAsync();
 
             // generates weather forecasts 
-            List<WeatherForecast> forecasts = await WeatherForecastGenerator.GenerateForecasts(DateTime.Today, reportTypes, seedSize);
+            List<WeatherForecast> forecasts = await WeatherForecastGenerator.GenerateForecasts(DateTime.Today, seedSize);
             await AddRangeAsync(forecasts);
+            await SaveChangesAsync();
+
+            List<ForecastReportType> forecastReportTypes = await WeatherForecastGenerator.GenerateForecastReportTypes(forecasts, reportTypes);
+            await AddRangeAsync(forecastReportTypes);
             await SaveChangesAsync();
         }
     }

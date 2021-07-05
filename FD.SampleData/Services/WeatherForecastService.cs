@@ -70,7 +70,7 @@ namespace FD.SampleData.Services
             {
                 retVal = await _context.WeatherForecasts
                     .AsNoTracking()
-                    .Include(r => r.ReportTypes)
+                    .Include(r => r.ForecastReportTypes)
                     .IfThenElse(
                         () => (filters == null),
                         e => e,
@@ -108,7 +108,7 @@ namespace FD.SampleData.Services
                 // does the join with tables referrenced and apply filters
                 weatherForecasts = await _context.WeatherForecasts
                 .AsNoTracking()
-                .Include(r => r.ReportTypes)
+                .Include(r => r.ForecastReportTypes)
                 .IfThenElse(
                     () => (filters == null),
                     e => e,
