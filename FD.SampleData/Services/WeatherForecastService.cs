@@ -40,6 +40,7 @@ namespace FD.SampleData.Services
         {
             return await _context.ReportTypes
                 .AsNoTracking()
+                .Include(r => r.ForecastReportTypes)
                 .IfThenElse(
                     () => (filters == null),
                     e => e,
