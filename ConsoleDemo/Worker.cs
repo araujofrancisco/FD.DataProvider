@@ -1,5 +1,4 @@
-﻿using FD.SampleData.Contexts;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
@@ -17,18 +16,10 @@ namespace ConsoleDemo
         private static bool _execute = true;
 
         private readonly EasyConsole.Menu menu = new();
-        private UserDbContext _contextUser;
-        private WeatherForecastDbContext _contextForecast;
 
-        public Worker(ILogger<Worker> logger, 
-            UserDbContext contextUser, WeatherForecastDbContext contextForecast,
-            IDataService dataService, IHostApplicationLifetime applicationLifetime)
+        public Worker(ILogger<Worker> logger, IDataService dataService, IHostApplicationLifetime applicationLifetime)
         {
             _logger = logger;
-
-            _contextUser = contextUser;
-            _contextForecast = contextForecast;
-
             _dataService = dataService;
             _applicationLifetime = applicationLifetime;
 
