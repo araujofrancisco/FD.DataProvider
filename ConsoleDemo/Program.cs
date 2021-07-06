@@ -31,13 +31,6 @@ namespace ConsoleDemo
                 services.AddOptions();
 
                 // setup dbcontextfactory and includes a scoped service to indicate the interface
-                services.AddDbContextFactory<UserDbContext>(options =>
-                {
-#if DEBUG
-                    options.EnableDetailedErrors(true);
-                    options.EnableSensitiveDataLogging(true);
-#endif
-                });
                 services
                     .AddSingleton<IDbContextFactory<UserDbContext>, DbContextFactory<UserDbContext>>()
                     .AddScoped(p => p.GetRequiredService<IDbContextFactory<UserDbContext>>().CreateContext())
