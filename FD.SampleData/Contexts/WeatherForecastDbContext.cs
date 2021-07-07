@@ -1,5 +1,4 @@
 ﻿using FD.SampleData.Data.Generators;
-using FD.SampleData.Models.Users;
 using FD.SampleData.Models.Weather;
 using Microsoft.EntityFrameworkCore;
 using System;
