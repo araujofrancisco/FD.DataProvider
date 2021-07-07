@@ -134,24 +134,45 @@ namespace FD.SampleData.Services
             return users;
         }
 
+        /// <summary>
+        /// Add the user to the context and save the changes.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public async Task AddUser(User user)
         {
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Update user and save the changes.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public async Task EditUser(User user)
         {
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Remove the user from the context and save changes.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public async Task DeleteUser(User user)
         {
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Set a new password for the user and save the changes.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public async Task SetNewPassword(User user, string password)
         {
             //TODO: implement password hashing
@@ -159,6 +180,13 @@ namespace FD.SampleData.Services
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
+
+        /// <summary>
+        /// Allows to change the value for IsEnabled to allow/block user sign-in.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="enabled"></param>
+        /// <returns></returns>
         public async Task<User> SignIn(User user, bool enabled)
         {
             var _user = await _context.Users
