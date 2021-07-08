@@ -10,7 +10,7 @@
 
 <DataTable @ref="_table" TModel="IdentityUser" Items="LoadUsers"
            SortChanged="(c, d) => { this.SortColumn = c; this.SortDirection = d; }"
-           ContainerCssClass="d-flex justify-center align-center mud-height-full"
+           ContainerCssClass="d-flex justify-center align-center"
            ContainerAttributes=@(new Dictionary<string, object>() { { "style", "width: 100%;" } })
            Styles=@(FD.Blazor.Core.TableStyle.Striped | FD.Blazor.Core.TableStyle.Hover)
            TableAttributes=@(new Dictionary<string, object>() { { "style", "width: 100%;" } })
