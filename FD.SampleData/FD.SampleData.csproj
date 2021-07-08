@@ -10,11 +10,11 @@
     <RepositoryUrl>https://github.com/araujofrancisco/FD.DataProvider</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>sqlite, dbcontextfactory, data-generators</PackageTags>
-    <PackageReleaseNotes>- Fixed GetReportType method including ForecastReportTypes in the query.
+    <PackageReleaseNotes>- Add DbConnectionRestricted class to share a subset of methods for the database connection, allowing access to create dbcommands and run raw queries.
 </PackageReleaseNotes>
-    <Version>1.0.5.3</Version>
-    <AssemblyVersion>1.0.5.3</AssemblyVersion>
-    <FileVersion>1.0.5.3</FileVersion>
+    <Version>1.0.5.4</Version>
+    <AssemblyVersion>1.0.5.4</AssemblyVersion>
+    <FileVersion>1.0.5.4</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
