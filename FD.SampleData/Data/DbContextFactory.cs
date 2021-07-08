@@ -10,7 +10,12 @@ namespace FD.SampleData.Data
         where TDbContext : DbContext, IDbContextData, new()
     {
         private DbConnection _connection;
+        private DbConnectionRestricted _connectionRestricted;
+
         private bool _disposed = false;
+        private Guid _uidRestricted;
+
+        public DbConnectionRestricted ConnectionRestricted { get => _connectionRestricted; }
 
         /// <summary>
         /// Creates database options using sqlite.
@@ -37,6 +42,8 @@ namespace FD.SampleData.Data
                 var options = CreateOptions();
                 using var context = Activator.CreateInstance(typeof(TDbContext), options) as TDbContext;
                 context.Database.EnsureCreated();
+
+                _connectionRestricted = new(_connection, out _uidRestricted);
             }
 
             return Activator.CreateInstance(typeof(TDbContext), CreateOptions()) as TDbContext;
@@ -66,6 +73,8 @@ namespace FD.SampleData.Data
 
                     if (_connection != null)
                     {
+                        // first release the connection from dbconnectionrestricted to proceed to dispose it
+                        _connectionRestricted.DisposeRestricted(_uidRestricted);
                         _connection.Dispose();
                         _connection = null;
                     }
