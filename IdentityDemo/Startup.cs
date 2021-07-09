@@ -27,17 +27,18 @@ namespace IdentityDemo
         {
             // set dbcontext factory options and register it as singleton to allow using memory database
             // until the service gets shutdown
-            services.AddDbContextFactory<ApplicationDbContext>(options =>
-            {
-#if DEBUG
-                options.EnableDetailedErrors(true);
-                options.EnableSensitiveDataLogging(true);
-#endif
-            });
+            //            services.AddDbContextFactory<ApplicationDbContext>(options =>
+            //            {
+            //#if DEBUG
+            //                options.EnableDetailedErrors(true);
+            //                options.EnableSensitiveDataLogging(true);
+            //#endif
+            //            });
             services
                 .AddSingleton<FD.SampleData.Interfaces.IDbContextFactory<ApplicationDbContext>, DbContextFactory<ApplicationDbContext>>()
                 // register the method to obtain a new context and creates the database if there is no a previous connection
                 .AddScoped(p => p.GetRequiredService<FD.SampleData.Interfaces.IDbContextFactory<ApplicationDbContext>>().CreateContext())
+                .AddScoped(p => p.GetRequiredService<FD.SampleData.Interfaces.IDbContextFactory<ApplicationDbContext>>().ConnectionRestricted)
                 // custom data access service
                 .AddScoped<IDataService, DataService>();        
 
@@ -76,6 +77,9 @@ namespace IdentityDemo
 
             app.UseRouting();
 
+            // custom seeder
+            SeedDb(app.ApplicationServices);
+
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -84,10 +88,7 @@ namespace IdentityDemo
                 endpoints.MapControllers();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
-            });
-
-            // custom seeder
-            SeedDb(app.ApplicationServices);
+            });            
         }
 
         // on generated data seed size will indicate how many records we want to create

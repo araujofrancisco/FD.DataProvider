@@ -1,0 +1,87 @@
+﻿@page "/commands"
+@attribute [Authorize]
+
+@inject IDataService DataService
+
+<h3>Commands</h3>
+
+@if (editContext != null)
+{
+    <style>
+        .text-area {
+            width: 80vw;
+        }
+    </style>
+    <EditForm EditContext="@editContext">
+        <div>
+            <p>
+                <InputTextArea class="text-area" @bind-Value="@_context.query" rows="6" onclick="this.focus();this.select()"></InputTextArea>
+            </p>
+            <button @onclick="OnCommand">Command</button>
+            <p>
+                @_message
+            </p>
+        </div>
+    </EditForm>
+}
+<div>
+    @if (_table != null && _refresh)
+    {
+        _refresh = false;
+        <table>
+            <thead>
+                <tr>
+                    @foreach (System.Data.DataColumn col in _table.Columns)
+                    {
+                        <th>@col.ColumnName</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (System.Data.DataRow row in _table.Rows)
+                {
+                    <tr>
+                        @foreach (var value in row.ItemArray)
+                        {
+                            <td>@value</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@code {
+
+    private string _message = null;
+    private System.Data.DataTable _table;
+    private bool _refresh { get; set; } = false;
+
+    public class ec
+    {
+        public string query { get; set; } = "SELECT name FROM sqlite_master WHERE type ='table' AND name NOT LIKE 'sqlite_%'";
+    }
+
+    private EditContext editContext { get; set; }
+    private ec _context = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Run(() => editContext = new EditContext(_context));
+    }
+
+    private async Task OnCommand()
+    {
+        _message = string.Empty;
+        try
+        {
+            _table = await DataService.Command(_context.query);
+            _refresh = true;
+        }
+        catch (Exception ex)
+        {
+            _message = ex.ToString();
+        }
+    }
+}
