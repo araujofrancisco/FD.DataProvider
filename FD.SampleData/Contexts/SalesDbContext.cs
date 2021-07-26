@@ -106,6 +106,7 @@ namespace FD.SampleData.Contexts
 
         public override async Task Seed(int? seedSize)
         {
+            // seed addresses and people
             List<Address> addresses = await IndividualGenerator.GenerateAddresses();
             await AddRangeAsync(addresses);
             await SaveChangesAsync();
@@ -113,15 +114,6 @@ namespace FD.SampleData.Contexts
             List<Person> people = await IndividualGenerator.GenerateIndividuals();
             await AddRangeAsync(people);
             await SaveChangesAsync();
-
-            // generates roles and save then to get the database generate ids
-            //List<Role> roles = await UserGenerator.GenerateRoles();
-            //await AddRangeAsync(roles);
-            //await SaveChangesAsync();
-
-            //List<User> users = await UserGenerator.GenerateUsers(roles, seedSize);
-            //await AddRangeAsync(users);
-            //await SaveChangesAsync();
         }
 
     }
