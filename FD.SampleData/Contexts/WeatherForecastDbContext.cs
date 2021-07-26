@@ -12,6 +12,7 @@ namespace FD.SampleData.Contexts
         public DbSet<ReportType> ReportTypes { get; set; }
         public DbSet<WeatherForecast> WeatherForecasts { get; set; }
         public DbSet<ForecastReportType> ForecastReportTypes { get; set; }
+        public DbSet<Location> Locations { get; set; }
 
         public WeatherForecastDbContext()
         {
@@ -43,6 +44,10 @@ namespace FD.SampleData.Contexts
                         j.HasKey(t => new { t.WeatherForecastId, t.ReportTypeId });
                     });
 
+            modelBuilder.Entity<Location>()
+                .HasOne<WeatherForecast>()
+                .WithOne(l => l.Location)
+                .HasForeignKey<Location>(l => l.ID);
         }
 
         /// <summary>
@@ -52,12 +57,16 @@ namespace FD.SampleData.Contexts
         /// <returns></returns>
         public override async Task Seed(int? seedSize)
         {
+            List<Location> locations = await WeatherForecastGenerator.GenerateLocations(seedSize);
+            await AddRangeAsync(locations);
+            await SaveChangesAsync();
+
             List<ReportType> reportTypes = await WeatherForecastGenerator.GenerateReportTypes();
             await AddRangeAsync(reportTypes);
             await SaveChangesAsync();
 
             // generates weather forecasts 
-            List<WeatherForecast> forecasts = await WeatherForecastGenerator.GenerateForecasts(DateTime.Today, reportTypes, seedSize);
+            List<WeatherForecast> forecasts = await WeatherForecastGenerator.GenerateForecasts(DateTime.Today, reportTypes, locations, seedSize);
             await AddRangeAsync(forecasts);
             await SaveChangesAsync();
         }
