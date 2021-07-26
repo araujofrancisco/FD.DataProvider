@@ -74,6 +74,7 @@ namespace FD.SampleData.Services
                     .AsNoTracking()
                     .Include(r => r.ReportTypes)
                     .Include(f => f.ForecastReportTypes)
+                    .Include(l => l.Location)
                     .IfThenElse(
                         () => (filters == null),
                         e => e,
@@ -113,6 +114,7 @@ namespace FD.SampleData.Services
                 .AsNoTracking()
                 .Include(r => r.ReportTypes)
                 .Include(f => f.ForecastReportTypes)
+                .Include(l => l.Location)
                 .IfThenElse(
                     () => (filters == null),
                     e => e,
