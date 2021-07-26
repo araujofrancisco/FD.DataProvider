@@ -16,5 +16,7 @@ namespace FD.SampleData.Models.Weather
         public DateTime? WhenUpdated { get; set; }
         public virtual ICollection<ReportType> ReportTypes { get; set; }
         public virtual List<ForecastReportType> ForecastReportTypes { get; set; }
+        public int LocationID { get; set; }
+        public virtual Location Location { get; set; }
     }
 }
