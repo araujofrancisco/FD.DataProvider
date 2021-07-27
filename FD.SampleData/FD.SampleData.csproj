@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -10,11 +10,14 @@
     <RepositoryUrl>https://github.com/araujofrancisco/FD.DataProvider</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>sqlite, dbcontextfactory, data-generators</PackageTags>
-    <PackageReleaseNotes>- Add DbConnectionRestricted class to share a subset of methods for the database connection, allowing access to create dbcommands and run raw queries.
-</PackageReleaseNotes>
-    <Version>1.0.5.4</Version>
-    <AssemblyVersion>1.0.5.4</AssemblyVersion>
-    <FileVersion>1.0.5.4</FileVersion>
+    <PackageReleaseNotes>- Add SalesDbContext.
+- Add IndividualGenerator.
+- Add multiple Generics.
+- Add model Location for WeatherForecasts
+- Fix issues with Id and WeatherForecast model relalationship</PackageReleaseNotes>
+    <Version>1.0.5.8</Version>
+    <AssemblyVersion>1.0.5.8</AssemblyVersion>
+    <FileVersion>1.0.5.8</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
