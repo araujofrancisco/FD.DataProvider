@@ -15,6 +15,7 @@ namespace FD.SampleData.Data.Generators
             var rng = new Random();
             List<Location> locations = Enumerable.Range(1, (int)SeedSize).Select(index => new Location
             {
+                Id = index,
                 City = Generics.Cities[rng.Next(Generics.Cities.Length)],
                 Favorite = rng.Next(0, 100) == 97,
                 Zip = rng.Next(10000, 99999).ToString()
@@ -40,8 +41,13 @@ namespace FD.SampleData.Data.Generators
         /// <returns></returns>
         public static Task<List<ReportType>> GenerateReportTypes()
         {
-            List<ReportType> reportType = Generics.ReportTypes.Select(r => new ReportType { Name = r }).ToList();
-            return Task.FromResult(reportType);
+            //List<ReportType> reportType = Generics.ReportTypes.Select(r => new ReportType { Name = r }).ToList();
+            //return Task.FromResult(reportType);
+            return Task.FromResult(Enumerable.Range(1, (int)Generics.ReportTypes.Length).Select(index => new ReportType
+            {
+                Id = index,
+                Name = Generics.ReportTypes[index-1]
+            }).ToList());
         }
 
         /// <summary>
@@ -56,6 +62,7 @@ namespace FD.SampleData.Data.Generators
             var rng = new Random();
             List<WeatherForecast> forecasts = Enumerable.Range(1, (int)SeedSize).Select(index => new WeatherForecast
             {
+                Id = index,
                 Date = startDate.AddDays(index),
                 TemperatureC = rng.Next(-20, 55),
                 Summary = Generics.WeatherTypes[rng.Next(Generics.WeatherTypes.Length)],
@@ -68,7 +75,7 @@ namespace FD.SampleData.Data.Generators
             // assign locations, they all should be unique so we do not get multiple forecasts for same location
             // since we ensure that there are as many locations as indicated by SeedSize we should not have errors
             // by trying to access/remove locations
-            forecasts.ForEach(f => { f.LocationID = locations.First().ID; locations.RemoveAt(0); });
+            forecasts.ForEach(f => { f.Location = locations.First(); locations.RemoveAt(0); });
 
             return Task.FromResult(forecasts);
         }

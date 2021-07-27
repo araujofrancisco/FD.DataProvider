@@ -28,6 +28,23 @@ namespace FD.SampleData.Contexts
 
             // set model relations
             modelBuilder.Entity<WeatherForecast>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Location>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Location>(entity =>
+            {
+                entity.HasKey(z => z.Id);
+                entity.HasOne<WeatherForecast>()
+                    .WithOne(l => l.Location)
+                    .HasForeignKey<Location>(l => l.WeatherForecastId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<WeatherForecast>()
                 .HasMany(u => u.ReportTypes)
                 .WithMany(r => r.WeatherForecasts)
                 .UsingEntity<ForecastReportType>(
@@ -43,11 +60,6 @@ namespace FD.SampleData.Contexts
                     {
                         j.HasKey(t => new { t.WeatherForecastId, t.ReportTypeId });
                     });
-
-            modelBuilder.Entity<Location>()
-                .HasOne<WeatherForecast>()
-                .WithOne(l => l.Location)
-                .HasForeignKey<Location>(l => l.ID);
         }
 
         /// <summary>

@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FD.SampleData.Models.Weather
 {
     public class WeatherForecast
     {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
         public DateTime Date { get; set; }
         public int TemperatureC { get; set; }
@@ -14,9 +17,8 @@ namespace FD.SampleData.Models.Weather
         public int DaylightTime { get; set; }
         public string Phone { get; set; }
         public DateTime? WhenUpdated { get; set; }
-        public virtual ICollection<ReportType> ReportTypes { get; set; }
-        public virtual List<ForecastReportType> ForecastReportTypes { get; set; }
-        public int LocationID { get; set; }
-        public virtual Location Location { get; set; }
+        public ICollection<ReportType> ReportTypes { get; set; }
+        public List<ForecastReportType> ForecastReportTypes { get; set; }
+        public Location Location { get; set; }
     }
 }
