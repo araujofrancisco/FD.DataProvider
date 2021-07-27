@@ -5,68 +5,76 @@
 
 <h3>Entities</h3>
 
-@if (entities != null)
+@if (data != null)
 {
-    <div class="grid" style="display: grid;width: 83vw;">
-        <ul class="ul-entity">
-            @foreach (var entity in entities)       // creates a list to show all entities found
-            {
-                <li class="li-entity" @onclick="(args) => OnEntityClick(args, entity)">
-                    <div class="li-row">
-                        <span>Name @entity.Name</span>
-                        <span>Records @entity.Entity.Count()</span>
+    <ul>
+        @foreach (var context in data)
+        {            
+            <li>
+                ContextId = @context.Key.ContextId
+                <div class="grid" style="display: grid;width: 83vw;">
+                    <ul class="ul-entity">
+                        @foreach (var entity in context.Value)       // creates a list to show all entities found
+                        {
+                            <li class="li-entity" @onclick="(args) => OnEntityClick(args, entity)">
+                                <div class="li-row">
+                                    <span>Name @entity.Name</span>
+                                    <span>Records @entity.Entity.Count()</span>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+                <hr style="height: 2px;padding: 8px;" />
+
+                @if (curEntity != null)     // if an entity was selected and it have rows generates a table showing the records
+                {
+                    <div>
+                        <h4>@curEntity.Name</h4>
+
+                        @if (curRows.Any())
+                        {
+                            <div class="table-responsive-sm">
+                                <table class="table table-stripped table-hover table-dark">
+                                    <thead>
+                                        <tr>
+                                            @foreach (Column column in curEntity.Columns())
+                                            {
+                                                <td>@column.Name (@column.DataType.ToString())</td>
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (Row row in curEntity.Rows())
+                                        {
+                                            <tr>
+                                                @foreach (Column column in row.Columns)
+                                                {
+                                                    <td>@column.Value</td>
+                                                }
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                        else
+                        {
+                            <div>
+                                There are no records for this entity, we cannot infer the columns without records.
+                            </div>
+                        }
                     </div>
-                </li>
-            }
-        </ul>
-    </div>
-
-    <hr style="height: 2px;padding: 8px;" />
-
-    @if (curEntity != null)     // if an entity was selected and it have rows generates a table showing the records
-    {
-        <div>
-            <h4>@curEntity.Name</h4>
-
-            @if (curRows.Any())
-            {
-                <div class="table-responsive-sm">
-                    <table class="table table-stripped table-hover table-dark">
-                        <thead>
-                            <tr>
-                                @foreach (Column column in curEntity.Columns())
-                                {
-                                    <td>@column.Name (@column.DataType.ToString())</td>
-                                }
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (Row row in curEntity.Rows())
-                            {
-                                <tr>
-                                    @foreach (Column column in row.Columns)
-                                    {
-                                        <td>@column.Value</td>
-                                    }
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            }
-            else
-            {
-                <div>
-                    There are no records for this entity, we cannot infer the columns without records.
-                </div>
-            }
-        </div>
-    }
+                }
+            </li>
+        }
+    </ul>
 }
 
 @code
 {
-    private IEnumerable<DbContextEntity> entities { get; set; }
+    private Dictionary<DbContext, IEnumerable<DbContextEntity>> data { get; set; }
     private DbContextEntity curEntity { get; set; } = null;
     private IEnumerable<Row> curRows { get; set; } = null;
 
@@ -74,7 +82,8 @@
     {
         // get all the entities in current dbcontext
         // this allow to change dbcontext and still showing all entities and data in it
-        entities = await DataService.GetAllQueries();
+        data = await DataService.GetAllQueries();
+
     }
 
     private Task OnEntityClick(MouseEventArgs args, DbContextEntity entity)

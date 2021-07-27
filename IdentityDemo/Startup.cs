@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using FD.SampleData.Contexts;
 
 namespace IdentityDemo
 {
@@ -36,9 +37,15 @@ namespace IdentityDemo
             //            });
             services
                 .AddSingleton<FD.SampleData.Interfaces.IDbContextFactory<ApplicationDbContext>, DbContextFactory<ApplicationDbContext>>()
+                .AddSingleton<FD.SampleData.Interfaces.IDbContextFactory<WeatherForecastDbContext>, DbContextFactory<WeatherForecastDbContext>>()
+
                 // register the method to obtain a new context and creates the database if there is no a previous connection
                 .AddScoped(p => p.GetRequiredService<FD.SampleData.Interfaces.IDbContextFactory<ApplicationDbContext>>().CreateContext())
                 .AddScoped(p => p.GetRequiredService<FD.SampleData.Interfaces.IDbContextFactory<ApplicationDbContext>>().ConnectionRestricted)
+
+                .AddScoped(p => p.GetRequiredService<FD.SampleData.Interfaces.IDbContextFactory<WeatherForecastDbContext>>().CreateContext())
+                .AddScoped(p => p.GetRequiredService<FD.SampleData.Interfaces.IDbContextFactory<WeatherForecastDbContext>>().ConnectionRestricted)
+
                 // custom data access service
                 .AddScoped<IDataService, DataService>();        
 
@@ -92,7 +99,7 @@ namespace IdentityDemo
         }
 
         // on generated data seed size will indicate how many records we want to create
-        private const int seedSize = 1000;
+        private const int seedSize = 500;
 
         /// <summary>
         /// Executes database seeder just after all application services has started.
@@ -103,6 +110,10 @@ namespace IdentityDemo
             using var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
             using var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             DbInitializer<ApplicationDbContext>.Initialize(scope, context, seedSize);
+
+            using var weather_context = scope.ServiceProvider.GetRequiredService<WeatherForecastDbContext>();
+            //Task.Run(() => weather_context.Seed(seedSize));
+            DbInitializer<WeatherForecastDbContext>.Initialize(weather_context, seedSize);
         }
     }
 }

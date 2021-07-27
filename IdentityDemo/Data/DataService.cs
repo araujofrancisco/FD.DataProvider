@@ -4,12 +4,14 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Data;
+using FD.SampleData.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdentityDemo
 {
     public interface IDataService
     {
-        Task<IEnumerable<DbContextEntity>> GetAllQueries();
+        Task<Dictionary<DbContext, IEnumerable<DbContextEntity>>> GetAllQueries();
         Task<DataTable> Command(string query);
     }
 
@@ -17,18 +19,26 @@ namespace IdentityDemo
     {
         private readonly ILogger<DataService> _logger;
         private readonly ApplicationDbContext _context;
+        private readonly WeatherForecastDbContext _weather_context;
         private readonly DbConnectionRestricted _connectionRestricted;
 
-        public DataService(ILogger<DataService> logger, ApplicationDbContext context, DbConnectionRestricted connectionRestricted)
+        public DataService(ILogger<DataService> logger, 
+            ApplicationDbContext context, DbConnectionRestricted connectionRestricted, 
+            WeatherForecastDbContext weather_context)
         {
             _logger = logger;
             _context = context;
             _connectionRestricted = connectionRestricted;
+            _weather_context = weather_context;
         }
 
-        public async Task<IEnumerable<DbContextEntity>> GetAllQueries()
+        public async Task<Dictionary<DbContext, IEnumerable<DbContextEntity>>> GetAllQueries()
         {
-            return await Task.Run(() => _context.GetAllEntityQueries());
+            return new Dictionary<DbContext, IEnumerable<DbContextEntity>>
+            {
+                { _context, await Task.Run(() => _context.GetAllEntityQueries()) },
+                { _weather_context, await Task.Run(() => _weather_context.GetAllEntityQueries()) }
+            };
         }
 
         public async Task<DataTable> Command(string query)
