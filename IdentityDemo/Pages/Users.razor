@@ -9,7 +9,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <DataTable @ref="_table" TModel="IdentityUser" Items="LoadUsers"
-           SortChanged="(c, d) => { this.SortColumn = c; this.SortDirection = d; }"
+           SortChanged="(c, d, e) => { this.SortColumn = c; this.SortDirection = d; this.SortColumnExpr = e; }"
            ContainerCssClass="d-flex justify-center align-center"
            ContainerAttributes=@(new Dictionary<string, object>() { { "style", "width: 100%;" } })
            Styles=@(FD.Blazor.Core.TableStyle.Striped | FD.Blazor.Core.TableStyle.Hover)
@@ -32,13 +32,17 @@
 
     private string SortColumn { get; set; }
     private FD.Blazor.Core.SortDirection SortDirection { get; set; }
+    private Expression<Func<IdentityUser, object>> SortColumnExpr { get; set; }
 
     private DataTable<IdentityUser> _table;
 
     protected async ValueTask<ItemsProviderResult<IdentityUser>> LoadUsers(ItemsProviderRequest request)
     {
         var fc = _UserManager.Users.ToList();
-        if (SortColumn != null) fc = (SortDirection == FD.Blazor.Core.SortDirection.Ascending) ? fc.OrderBy(SortColumn).ToList() : fc.OrderByDescending(SortColumn).ToList();
+        if (SortColumnExpr != null)
+            fc = (SortDirection == FD.Blazor.Core.SortDirection.Ascending) ? fc.OrderBy(SortColumnExpr.Compile()).ToList() : fc.OrderByDescending(SortColumnExpr.Compile()).ToList();
+        else if (SortColumn != null)
+            fc = (SortDirection == FD.Blazor.Core.SortDirection.Ascending) ? fc.OrderBy(SortColumn).ToList() : fc.OrderByDescending(SortColumn).ToList();
         return new ItemsProviderResult<IdentityUser>(fc.Skip(request.StartIndex).Take(request.Count), fc.Count());
     }
 }
