@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Authors>Francisco Araujo</Authors>
     <PackageId>FreelanceDevelopers.SampleData</PackageId>
     <Description>Library for adding sample data context to test applications, use sqlite in memory database to keep data and allow initial seeding.</Description>
@@ -10,20 +10,16 @@
     <RepositoryUrl>https://github.com/araujofrancisco/FD.DataProvider</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>sqlite, dbcontextfactory, data-generators</PackageTags>
-    <PackageReleaseNotes>- Add SalesDbContext.
-- Add IndividualGenerator.
-- Add multiple Generics.
-- Add model Location for WeatherForecasts
-- Fix issues with Id and WeatherForecast model relalationship</PackageReleaseNotes>
-    <Version>1.0.5.8</Version>
+    <PackageReleaseNotes>- Upgrade to .net 6.0</PackageReleaseNotes>
+    <Version>1.0.6</Version>
     <AssemblyVersion>1.0.5.8</AssemblyVersion>
     <FileVersion>1.0.5.8</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FreelanceDevelopers.Blazor.Core" Version="1.0.8.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.8" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
+    <PackageReference Include="FreelanceDevelopers.Blazor.Core" Version="1.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
