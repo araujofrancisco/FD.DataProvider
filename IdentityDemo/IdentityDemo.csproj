@@ -1,26 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <UserSecretsId>aspnet-IdentityDemo-7C55F3BC-55C6-4808-94F8-4541C3403A35</UserSecretsId>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="FreelanceDevelopers.Blazor.Core" Version="1.0.9" />
-    <PackageReference Include="FreelanceDevelopers.Blazor.DataTable" Version="1.0.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.36" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.36" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.36" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.36" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.36">
+    <PackageReference Include="FreelanceDevelopers.Blazor.Core" Version="1.1.0" />
+    <PackageReference Include="FreelanceDevelopers.Blazor.DataTable" Version="1.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.12">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="6.0.36" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.12" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\FD.SampleData\FD.SampleData.csproj" />
   </ItemGroup>
-
 </Project>

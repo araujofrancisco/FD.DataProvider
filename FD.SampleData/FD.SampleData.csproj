@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Authors>Francisco Araujo</Authors>
     <PackageId>FreelanceDevelopers.SampleData</PackageId>
     <Description>Library for adding sample data context to test applications, use sqlite in memory database to keep data and allow initial seeding.</Description>
@@ -11,22 +10,20 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>sqlite, dbcontextfactory, data-generators</PackageTags>
     <PackageReleaseNotes>- Upgrade to .net 6.0</PackageReleaseNotes>
-    <Version>1.0.7</Version>
+    <Version>1.1.0</Version>
     <AssemblyVersion>1.0.5.8</AssemblyVersion>
     <FileVersion>1.0.5.8</FileVersion>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="FreelanceDevelopers.Blazor.Core" Version="1.0.9" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.36" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.1" />
+    <PackageReference Include="FreelanceDevelopers.Blazor.Core" Version="1.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.12" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.1" />
   </ItemGroup>
-
   <ItemGroup>
     <None Include="..\LICENSE">
       <Pack>True</Pack>
-      <PackagePath></PackagePath>
+      <PackagePath>
+      </PackagePath>
     </None>
   </ItemGroup>
-
 </Project>
