@@ -364,3 +364,5 @@ FodyWeavers.xsd
 /identitydemo.tar
 /push_nuget.bat
 /push_nuget_local.bat
+/FD.SampleData/push_nuget.bat
+/FD.SampleData/push_nuget_local.bat
