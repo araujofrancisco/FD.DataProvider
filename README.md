@@ -9,3 +9,5 @@ Shows how to use premade model and dbcontext with random generated data.
 ## IdentityDemo
 
 Shows how to implement it when using Blazor with ASP.Net Core Identity to provide a test base.
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/araujofrancisco/FD.DataProvider)
